@@ -3,24 +3,26 @@ package config
 import (
 	"github.com/go-ini/ini"
 	"log"
-	"server/app/config/vos"
 )
+
+type AppConfig struct {
+}
+
+type ServerConfig struct {
+	RunMode string
+}
 
 var cfg *ini.File
 
-var AppConfig = &vos.AppConfig{}
-
-var ServerConfig = &vos.ServerConfig{}
-
 func Init() {
 	var err error
-	cfg, err = ini.Load("conf/app.ini")
+	cfg, err = ini.Load("conf/pkg.ini")
 	if err != nil {
-		log.Fatalf("failed to load app.ini:%v", err)
+		log.Fatalf("failed to load pkg.ini:%v", err)
 	}
 
-	mapTo("app", AppConfig)
-	mapTo("server", ServerConfig)
+	mapTo("pkg", &AppConfig{})
+	mapTo("server", &ServerConfig{})
 }
 
 func mapTo(section string, v interface{}) {
