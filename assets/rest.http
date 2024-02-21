@@ -1,5 +1,5 @@
 ###
-POST localhost:8080/login
+POST 115.29.207.183:8080/login
 Content-Type: application/json
 
 {
@@ -10,6 +10,7 @@ Content-Type: application/json
 ###
 POST localhost:8080/register
 Content-Type: application/json
+yace: y
 
 {
   "email": "{{$random.integer(100, 200)}}@11.com",

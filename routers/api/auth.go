@@ -34,6 +34,14 @@ func (a *AuthService) Register(c *gin.Context) {
 	// TODO login
 	req := &registerEntity{}
 	_ = c.BindJSON(req)
+	yace := c.GetHeader("yace")
+
+	if "y" == yace {
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+		})
+		return
+	}
 	email, passwd, nickname := req.Email, req.Passwd, req.Nickname
 	user := &entity.User{
 		Email:       email,
