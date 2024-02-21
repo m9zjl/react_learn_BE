@@ -3,7 +3,9 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	log "log/slog"
 	"net/http"
+	"server/pkg/domain/entity"
 	"server/service"
 	"time"
 )
@@ -23,6 +25,43 @@ type authEntity struct {
 	Passwd string `valid:"Required; MaxSize(128)" json:"passwd"`
 }
 
+type registerEntity struct {
+	authEntity
+	Nickname string `valid:"Required; MaxSize(64)" json:"nickname"`
+}
+
+func (a *AuthService) Register(c *gin.Context) {
+	// TODO login
+	req := &registerEntity{}
+	_ = c.BindJSON(req)
+	email, passwd, nickname := req.Email, req.Passwd, req.Nickname
+	user := &entity.User{
+		Email:       email,
+		Nickname:    nickname,
+		Passwd:      passwd,
+		GmtCreate:   time.Now(),
+		GmtModified: time.Now(),
+	}
+	success, err := a.userService.AddUser(user)
+	if err != nil {
+		log.Error("system error:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "system error",
+		})
+		return
+	}
+	if !success {
+		c.JSON(http.StatusOK, gin.H{
+			"error":   "user already exists",
+			"success": false,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": success,
+	})
+}
+
 func (a *AuthService) LoginHandler(c *gin.Context) {
 	// TODO login
 	req := &authEntity{}
@@ -37,7 +76,7 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 		return
 	}
 	if user == nil {
-		c.JSON(http.StatusConflict, gin.H{
+		c.JSON(http.StatusNotFound, gin.H{
 			"error": "user doesn't exists",
 		})
 		return

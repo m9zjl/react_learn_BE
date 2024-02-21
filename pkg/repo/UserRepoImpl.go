@@ -3,6 +3,7 @@ package repo
 import (
 	"errors"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"server/pkg/domain/entity"
 )
 
@@ -16,8 +17,12 @@ func NewUserRepo(db *gorm.DB) IUserRepo {
 	}
 }
 
-func (u UserRepoImpl) Add(user *entity.User) error {
-	return u.db.Create(user).Error
+func (u UserRepoImpl) Add(user *entity.User) (bool, error) {
+	ret := u.db.Clauses(clause.Insert{Modifier: "OR IGNORE"}).Create(&user)
+	if ret.Error != nil {
+		return false, ret.Error
+	}
+	return ret.RowsAffected > 0, nil
 }
 
 func (u UserRepoImpl) ByEmail(email string) (*entity.User, error) {

@@ -6,3 +6,13 @@ Content-Type: application/json
   "email": "11@11.com",
   "passwd": "passwd"
 }
+
+###
+POST localhost:8080/register
+Content-Type: application/json
+
+{
+  "email": "{{$random.integer(100, 200)}}@11.com",
+  "passwd": "passwd",
+  "nickname": "nickname"
+}

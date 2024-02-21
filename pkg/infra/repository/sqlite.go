@@ -31,7 +31,7 @@ func connectDatabase() (*gorm.DB, error) {
 		return nil, err
 	}
 	sqlDB.SetMaxIdleConns(2)
-	sqlDB.SetMaxOpenConns(10)
+	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	sqlDB.SetConnMaxIdleTime(time.Minute * 10)
 	// ping

@@ -10,6 +10,7 @@ type Server struct {
 }
 
 func NewServer(authService *api.AuthService) *Server {
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
 	// Use logger from Gin
@@ -22,7 +23,7 @@ func NewServer(authService *api.AuthService) *Server {
 	//Request
 	r.POST("/login", authService.LoginHandler)
 
-	r.POST("register")
+	r.POST("/register", authService.Register)
 	//
 	//// Auth middleware
 	//api := r.Group("/api", middleware.AuthorizationMiddleware)
