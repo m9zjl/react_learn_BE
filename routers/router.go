@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"server/pkg/middleware"
 	"server/routers/api"
 )
 
@@ -10,12 +11,15 @@ type Server struct {
 }
 
 func NewServer(authService *api.AuthService) *Server {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	r := gin.New()
 
 	// Use logger from Gin
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+
+	//r.Use(cors.Default())
+	r.Use(middleware.Cors())
 
 	//// Swagger docs
 	//r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

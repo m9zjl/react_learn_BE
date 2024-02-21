@@ -71,7 +71,6 @@ func (a *AuthService) Register(c *gin.Context) {
 }
 
 func (a *AuthService) LoginHandler(c *gin.Context) {
-	// TODO login
 	req := &authEntity{}
 	_ = c.BindJSON(req)
 	email, passwd := req.Email, req.Passwd
@@ -91,7 +90,7 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 	}
 
 	if passwd != user.Passwd {
-		c.JSON(http.StatusConflict, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"error": "email and password doesn't match",
 		})
 		return
@@ -109,6 +108,7 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 		})
 	}
 
+	c.SetCookie("token", jwtToken, 3600*24, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"token": jwtToken,
 	})
