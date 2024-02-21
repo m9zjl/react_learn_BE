@@ -11,6 +11,7 @@ import (
 	"server/pkg/repo"
 	"server/routers"
 	"server/routers/api"
+	"server/routers/api/v1"
 	"server/service"
 )
 
@@ -21,6 +22,7 @@ func InitApp() (*routers.Server, error) {
 	iUserRepo := repo.NewUserRepo(db)
 	userService := service.NewUserService(iUserRepo)
 	authService := api.NewAuthService(userService)
-	server := routers.NewServer(authService)
+	articleService := v1.NewArticleService()
+	server := routers.NewServer(authService, articleService)
 	return server, nil
 }

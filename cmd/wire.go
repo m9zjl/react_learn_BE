@@ -9,10 +9,18 @@ import (
 	"server/pkg/repo"
 	"server/routers"
 	"server/routers/api"
+	v1 "server/routers/api/v1"
 	"server/service"
 )
 
 func InitApp() (*routers.Server, error) {
-	wire.Build(routers.NewServer, api.NewAuthService, service.NewUserService, repo.NewUserRepo, repository.InitDB)
+	wire.Build(
+		routers.NewServer,
+		api.NewAuthService,
+		service.NewUserService,
+		repo.NewUserRepo,
+		repository.InitDB,
+		v1.NewArticleService,
+	)
 	return &routers.Server{}, nil
 }

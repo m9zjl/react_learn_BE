@@ -2,6 +2,9 @@
 OPTIONS localhost:8080/login
 
 ###
+GET localhost:8080/articles
+
+###
 POST localhost:8080/login
 Content-Type: application/json
 

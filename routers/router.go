@@ -4,13 +4,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"server/pkg/middleware"
 	"server/routers/api"
+	v1 "server/routers/api/v1"
 )
 
 type Server struct {
 	engine *gin.Engine
 }
 
-func NewServer(authService *api.AuthService) *Server {
+func NewServer(
+	authService *api.AuthService,
+	articleService *v1.ArticleService,
+) *Server {
 	gin.SetMode(gin.DebugMode)
 	r := gin.New()
 
@@ -28,6 +32,8 @@ func NewServer(authService *api.AuthService) *Server {
 	r.POST("/login", authService.LoginHandler)
 
 	r.POST("/register", authService.Register)
+
+	r.GET("/articles", articleService.GetArticles)
 	//
 	//// Auth middleware
 	//api := r.Group("/api", middleware.AuthorizationMiddleware)
