@@ -45,7 +45,12 @@ func connectDatabase() (*gorm.DB, error) {
 
 	err = db.AutoMigrate(&entity.User{})
 	if err != nil {
-		log.Error("failed to migrate db")
+		log.Error("failed to migrate user")
+	}
+
+	err = db.AutoMigrate(&entity.Article{})
+	if err != nil {
+		log.Error("failed to migrate article")
 	}
 	return db, err
 }

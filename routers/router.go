@@ -31,9 +31,27 @@ func NewServer(
 	//Request
 	r.POST("/login", authService.LoginHandler)
 
+	r.POST("logout", authService.LogoutHandler)
+
 	r.POST("/register", authService.Register)
 
-	r.GET("/articles", articleService.GetArticles)
+	// user api
+	{
+		r.GET("/current_user", authService.GetCurrentUserInfo)
+	}
+	// article api
+	{
+		r.GET("/articles", articleService.GetArticles)
+		r.POST("/articles", articleService.GetArticles)
+		r.DELETE("/article:id", articleService.DeleteArticle)
+		r.PUT("/article", articleService.Add)
+	}
+
+	userRouterGroup := r.Group("/user")
+	{
+		userRouterGroup.GET("/get")
+	}
+
 	//
 	//// Auth middleware
 	//api := r.Group("/api", middleware.AuthorizationMiddleware)

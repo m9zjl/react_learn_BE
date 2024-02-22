@@ -2,16 +2,52 @@ package v1
 
 import (
 	"github.com/bytedance/sonic"
+	"github.com/duke-git/lancet/v2/strutil"
 	"github.com/gin-gonic/gin"
 	log "log/slog"
 	"net/http"
+	"server/pkg/domain/dto"
+	"server/pkg/middleware/auth"
+	"server/service"
 )
 
 type ArticleService struct {
+	articleService *service.ArticleService
 }
 
+func NewArticleService(articleService *service.ArticleService) *ArticleService {
+	return &ArticleService{
+		articleService: articleService,
+	}
+}
 func (s *ArticleService) GetArticles(c *gin.Context) {
 
+	query := &dto.ArticleQueryParameter{}
+	err := c.BindJSON(query)
+	if err != nil {
+		log.Error("get parameters error:%v", err)
+		c.JSON(http.StatusOK, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	articles, err := s.articleService.QueryArticles(query)
+	if err != nil {
+		log.Error("failed to query articles:%v", err)
+		c.JSON(http.StatusOK, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"articles": articles,
+		"success":  true,
+	})
+}
+
+func (s *ArticleService) GetArticles1(c *gin.Context) {
 	type article struct {
 		UserId int    `json:"userId"`
 		Id     int    `json:"id"`
@@ -32,6 +68,50 @@ func (s *ArticleService) GetArticles(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"articles": articles,
 	})
+}
+
+func (s *ArticleService) DeleteArticle(c *gin.Context) {
+
+}
+
+func (s *ArticleService) Add(c *gin.Context) {
+	if !auth.IsLogin(c) {
+		c.JSON(http.StatusOK, gin.H{
+			"error": "login to add article",
+		})
+		return
+	}
+	user := auth.GetLoginUser(c)
+	addArticle := &dto.AddArticleDTO{}
+	err := c.BindJSON(addArticle)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": "failed to get upload content",
+		})
+		return
+	}
+
+	if strutil.IsBlank(addArticle.Title) {
+		c.JSON(http.StatusOK, gin.H{
+			"error": "title is empty",
+		})
+		return
+	}
+
+	addArticle.User = user
+
+	success, err := s.articleService.Add(addArticle)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": success,
+	})
+	return
 }
 
 func getString() string {
@@ -95,7 +175,7 @@ func getString() string {
       "userId": 1,
       "id": 10,
       "title": "optio molestias id quia eum",
-      "body": "quo et expedita modi cum officia vel magni\ndoloribus qui repudiandae\nvero nisi sit\nquos veniam quod sed accusamus veritatis error"
+      "body": "v"
     },
     {
       "userId": 2,
@@ -166,8 +246,4 @@ func getString() string {
     }
   ]`
 
-}
-
-func NewArticleService() *ArticleService {
-	return &ArticleService{}
 }

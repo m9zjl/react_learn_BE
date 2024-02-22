@@ -6,7 +6,7 @@ package cmd
 import (
 	"github.com/google/wire"
 	"server/pkg/infra/repository"
-	"server/pkg/repo"
+	"server/pkg/repo/impl"
 	"server/routers"
 	"server/routers/api"
 	v1 "server/routers/api/v1"
@@ -18,7 +18,9 @@ func InitApp() (*routers.Server, error) {
 		routers.NewServer,
 		api.NewAuthService,
 		service.NewUserService,
-		repo.NewUserRepo,
+		service.NewArticleService,
+		impl.NewUserRepo,
+		impl.NewArticleRepo,
 		repository.InitDB,
 		v1.NewArticleService,
 	)

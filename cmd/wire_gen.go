@@ -8,7 +8,7 @@ package cmd
 
 import (
 	"server/pkg/infra/repository"
-	"server/pkg/repo"
+	"server/pkg/repo/impl"
 	"server/routers"
 	"server/routers/api"
 	"server/routers/api/v1"
@@ -19,10 +19,12 @@ import (
 
 func InitApp() (*routers.Server, error) {
 	db := repository.InitDB()
-	iUserRepo := repo.NewUserRepo(db)
+	iUserRepo := impl.NewUserRepo(db)
 	userService := service.NewUserService(iUserRepo)
 	authService := api.NewAuthService(userService)
-	articleService := v1.NewArticleService()
-	server := routers.NewServer(authService, articleService)
+	iArticleRepo := impl.NewArticleRepo(db)
+	articleService := service.NewArticleService(iArticleRepo, iUserRepo)
+	v1ArticleService := v1.NewArticleService(articleService)
+	server := routers.NewServer(authService, v1ArticleService)
 	return server, nil
 }

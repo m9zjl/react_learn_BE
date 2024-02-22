@@ -5,7 +5,9 @@ import (
 	"github.com/golang-jwt/jwt"
 	log "log/slog"
 	"net/http"
+	"server/pkg/domain/dto"
 	"server/pkg/domain/entity"
+	"server/pkg/middleware/auth"
 	"server/service"
 	"time"
 )
@@ -27,7 +29,7 @@ type authEntity struct {
 
 type registerEntity struct {
 	authEntity
-	Nickname string `valid:"Required; MaxSize(64)" json:"nickname"`
+	Username string `valid:"Required; MaxSize(64)" json:"username"`
 }
 
 func (a *AuthService) Register(c *gin.Context) {
@@ -42,10 +44,10 @@ func (a *AuthService) Register(c *gin.Context) {
 		})
 		return
 	}
-	email, passwd, nickname := req.Email, req.Passwd, req.Nickname
+	email, passwd, username := req.Email, req.Passwd, req.Username
 	user := &entity.User{
 		Email:       email,
-		Nickname:    nickname,
+		Username:    username,
 		Passwd:      passwd,
 		GmtCreate:   time.Now(),
 		GmtModified: time.Now(),
@@ -70,6 +72,13 @@ func (a *AuthService) Register(c *gin.Context) {
 	})
 }
 
+func (a *AuthService) LogoutHandler(c *gin.Context) {
+	c.SetCookie("token", "", -1, "/", "localhost", false, true)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+	})
+}
+
 func (a *AuthService) LoginHandler(c *gin.Context) {
 	req := &authEntity{}
 	_ = c.BindJSON(req)
@@ -83,8 +92,9 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 		return
 	}
 	if user == nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "user doesn't exists",
+		c.JSON(http.StatusOK, gin.H{
+			"error":   "user doesn't exists",
+			"success": false,
 		})
 		return
 	}
@@ -96,10 +106,18 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 		return
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.MapClaims{
-		"email":     user.Email,
-		"id":        user.ID,
-		"ExpiresAt": time.Now().Add(time.Hour * 12).Unix(),
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &dto.UserAuthClaim{
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 12).Unix(),
+		},
+		User: entity.User{
+			Email:       user.Email,
+			ID:          user.ID,
+			Username:    user.Username,
+			GmtModified: user.GmtModified,
+			GmtCreate:   user.GmtCreate,
+			Ext:         user.Ext,
+		},
 	})
 	jwtToken, err := token.SignedString([]byte("secret"))
 	if err != nil {
@@ -109,7 +127,17 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 	}
 
 	c.SetCookie("token", jwtToken, 3600*24, "/", "localhost", false, true)
+	user.Passwd = ""
 	c.JSON(http.StatusOK, gin.H{
-		"token": jwtToken,
+		"success": true,
+		"user":    user,
 	})
+}
+
+func (a *AuthService) GetCurrentUserInfo(c *gin.Context) {
+	user := auth.GetLoginUser(c)
+	c.JSON(http.StatusOK, gin.H{
+		"user": user,
+	})
+	return
 }

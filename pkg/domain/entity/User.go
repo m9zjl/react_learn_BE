@@ -7,8 +7,8 @@ import (
 type User struct {
 	ID          int       `gorm:"primary_key " json:"id"`
 	Email       string    `json:"email"`
-	Nickname    string    `json:"nickname"`
-	Passwd      string    `json:"passwd"`
+	Username    string    `json:"username"`
+	Passwd      string    `json:"passwd,omitempty"`
 	Ext         string    `json:"ext"`
 	GmtCreate   time.Time `json:"gmt_create"`
 	GmtModified time.Time `json:"gmt_modified"`

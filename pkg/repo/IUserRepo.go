@@ -6,4 +6,5 @@ type IUserRepo interface {
 	Add(user *entity.User) (bool, error)
 	Remove(id int) error
 	ByEmail(email string) (*entity.User, error)
+	GetUserByIds(ids []int) ([]*entity.User, error)
 }
