@@ -8,9 +8,10 @@ GET localhost:8080/articles
 
 GET localhost:8080/articles
 Content-Type: application/json
-Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDg2NDI3NDEsImlkIjoxMDAzLCJlbWFpbCI6IjExIiwidXNlcm5hbWUiOiIxMSIsImV4dCI6IiIsImdtdF9jcmVhdGUiOiIyMDI0LTAyLTIyVDE0OjMxOjM5LjA3MDgyMSswODowMCIsImdtdF9tb2RpZmllZCI6IjIwMjQtMDItMjJUMTQ6MzE6MzkuMDcwODIxKzA4OjAwIn0.Cgmhor2Kub-Fq9VRcWgqnz_FO709Ex64jK1JUoxbs28
 
 {
+  "email": "11@11.com",
+  "passwd": "passwd"
 }
 
 
