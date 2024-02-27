@@ -1,7 +1,6 @@
 package service
 
 import (
-	log "log/slog"
 	"server/pkg/domain/entity"
 	"server/pkg/repo"
 )
@@ -25,6 +24,6 @@ func (s *UserService) AddUser(user *entity.User) (bool, error) {
 	if err != nil {
 		return success, err
 	}
-	log.Info("add user email: %s :%s", user.Email, success)
+	//log.Info("add user email: %s :%s", user.Email, success)
 	return success, err
 }

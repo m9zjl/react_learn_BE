@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"server/pkg/middleware"
 	"server/routers/api"
 	v1 "server/routers/api/v1"
@@ -28,6 +29,12 @@ func NewServer(
 	//// Swagger docs
 	//r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	//
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+		})
+	})
 	//Request
 	r.POST("/login", authService.LoginHandler)
 
