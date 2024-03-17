@@ -73,7 +73,7 @@ func (a *AuthService) Register(c *gin.Context) {
 }
 
 func (a *AuthService) LogoutHandler(c *gin.Context) {
-	c.SetCookie("token", "", -1, "/", "localhost", false, true)
+	c.SetCookie("token", "", -1, "/", "localhost", true, true)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 	})
@@ -128,7 +128,7 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 
 	origin := c.Request.Header.Get("Origin")
 
-	c.SetCookie("token", jwtToken, 3600*24, "/", origin, false, true)
+	c.SetCookie("token", jwtToken, 3600*24, "/", origin, true, true)
 	user.Passwd = ""
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,

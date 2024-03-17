@@ -2,4 +2,3 @@
 cmd/cmd
 .idea
 server
-assets/db/db.sqlite

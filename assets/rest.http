@@ -10,8 +10,6 @@ GET https://localhost:8080/articles
 Content-Type: application/json
 
 {
-  "email": "11@11.com",
-  "passwd": "passwd"
 }
 
 

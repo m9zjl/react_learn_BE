@@ -74,3 +74,8 @@ func NewServer(
 func (s *Server) Run(addr ...string) error {
 	return s.engine.Run(addr...)
 }
+
+func (s *Server) RunTLS(addr, pem, key string) error {
+	return s.engine.RunTLS(addr, pem, key)
+
+}
