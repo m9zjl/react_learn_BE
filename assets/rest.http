@@ -12,6 +12,14 @@ Content-Type: application/json
 {
 }
 
+###
+
+GET https://115.29.207.183:8080/articles
+Content-Type: application/json
+
+{
+}
+
 
 
 ###
