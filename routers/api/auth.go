@@ -128,6 +128,7 @@ func (a *AuthService) LoginHandler(c *gin.Context) {
 
 	origin := c.Request.Header.Get("Origin")
 
+	c.SetSameSite(http.SameSiteNoneMode)
 	c.SetCookie("token", jwtToken, 3600*24, "/", origin, true, true)
 	user.Passwd = ""
 	c.JSON(http.StatusOK, gin.H{

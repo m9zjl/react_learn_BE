@@ -3,14 +3,14 @@ module server
 go 1.22.0
 
 require (
+	github.com/bytedance/sonic v1.11.0
+	github.com/duke-git/lancet/v2 v2.2.9
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-ini/ini v1.67.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/wire v0.6.0
 	gorm.io/driver/sqlite v1.5.5
 	gorm.io/gorm v1.25.7
-	github.com/bytedance/sonic v1.11.0
-	github.com/duke-git/lancet/v2 v2.2.9
 )
 
 require (
