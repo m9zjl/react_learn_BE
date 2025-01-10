@@ -1,11 +1,13 @@
 package routers
 
 import (
-	"github.com/gin-gonic/gin"
+	"io"
 	"net/http"
 	"server/pkg/middleware"
 	"server/routers/api"
 	v1 "server/routers/api/v1"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
@@ -17,6 +19,7 @@ func NewServer(
 	articleService *v1.ArticleService,
 ) *Server {
 	gin.SetMode(gin.DebugMode)
+	gin.DefaultWriter = io.Discard
 	r := gin.New()
 
 	// Use logger from Gin
